@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 Control</title>
+
+    <!-- پشتیبانی از نمایش به صورت اپلیکیشن -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <h1>کنترل چراغ ESP32</h1>
+    <button id="toggleButton">روشن کردن چراغ</button>
+
+    <script>
+        let lightStatus = false; // چراغ خاموش است به طور پیش‌فرض
+
+        document.getElementById('toggleButton').onclick = function() {
+            lightStatus = !lightStatus; // تغییر وضعیت چراغ
+            const buttonText = lightStatus ? 'خاموش کردن چراغ' : 'روشن کردن چراغ';
+            this.textContent = buttonText;
+
+            fetch(`http://192.168.0.105/toggle_light?status=${lightStatus ? 1 : 0}`) // ارسال درخواست به ESP32
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        };
+    </script>
+</body>
+</html>
